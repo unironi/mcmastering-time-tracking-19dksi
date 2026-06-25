@@ -1,0 +1,8 @@
+{
+  "name": "mcmastering-time-tracking",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "0944df4f"
+}
