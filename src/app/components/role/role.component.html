@@ -1,0 +1,15 @@
+@if (role(); as role) {
+  <ion-item [routerLink]="['/role', role.id]" [detail]="false">
+    <ion-label class="ion-text-wrap">
+      <h2 >{{ role.name }}
+        <span class="date">
+          @if (isIos()) {
+            <ion-icon aria-hidden="true" name="chevron-forward" size="small"></ion-icon>
+          }
+        </span>
+      </h2>
+      <p>{{ role.description }}</p>
+      <p>Weight: {{ role.weight }}</p>
+    </ion-label>
+  </ion-item>
+}
