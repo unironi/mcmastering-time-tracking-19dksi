@@ -23,8 +23,9 @@ const routes: Routes = [
     canMatch: [authGuard]
   },
   {
-    path: 'category/:category_id/role/role_id',
-    loadChildren: () => import('./pages/entry/entry.module').then( m => m.EntryPageModule)
+    path: 'category/:category_id/role/:role_id',
+    loadChildren: () => import('./pages/entry/entry.module').then( m => m.EntryPageModule),
+    canMatch: [authGuard]
   },
 ];
 

@@ -1,5 +1,5 @@
 @if (role(); as role) {
-  <ion-item [routerLink]="['/role', role.id]" [detail]="false">
+  <ion-item [routerLink]="['./role', role.id]" [detail]="false">
     <ion-label class="ion-text-wrap">
       <h2 >{{ role.name }}
         <span class="date">

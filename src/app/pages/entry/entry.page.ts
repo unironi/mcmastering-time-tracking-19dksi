@@ -1,15 +1,66 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { IonFooter, IonButton, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
+import { Platform } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
+import { Role, SupabaseService } from '../../services/supabase.service';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-entry',
   templateUrl: './entry.page.html',
   styleUrls: ['./entry.page.scss'],
+  imports: [ FormsModule, AsyncPipe, IonButton, IonFooter, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList ]
 })
 export class EntryPage implements OnInit {
+  private activatedRoute = inject(ActivatedRoute);
+  private platform = inject(Platform);
+  private supabaseService = inject(SupabaseService);
+
+  // entry$ = this.supabaseService.entry;
+
+  role_info!: Role | null;
+  role_id!: string;
+  cat_id!: string;
+
+  hours: number = 0;
+  notes: string = '';
+  entry: any;
 
   constructor() { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.role_id = this.activatedRoute.snapshot.paramMap.get('role_id') as string;
+    this.cat_id = this.activatedRoute.snapshot.paramMap.get('category_id') as string;
+    this.role_info = await this.supabaseService.getRole(this.role_id);
+
+    // this.entry$.subscribe(e => {
+      this.entry = await this.supabaseService.loadEntry(this.role_id);
+      if (this.entry) {
+        this.hours = this.entry.hours as number;
+        this.notes = this.entry.notes as string;
+      }
+    // });
+  }
+
+  getBackButtonText() {
+    const isIos = this.platform.is('ios')
+    return isIos ? 'Roles' : '';
+  }
+
+  async saveChanges() {
+    const entry = await this.supabaseService.getEntry(this.role_id);
+  // this.entry$.subscribe(async entry => {
+    if (entry) { // if entry exists, update it
+      await this.supabaseService.updateEntry(this.role_id, this.hours, this.notes);
+      console.log("saved changes");
+    } else { // otherwise create the entry
+      await this.supabaseService.addEntry(this.role_id, this.hours, this.notes);
+      console.log("new entry added");
+    }
+    await this.supabaseService.loadEntry(this.role_id);
+  // })
   }
 
 }

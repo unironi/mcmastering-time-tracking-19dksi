@@ -10,6 +10,7 @@ export interface Entry {
   group_id: string;
   role_id: string;
   hours: number;
+  notes: string;
   created_at: string;
   updated_at: string;  
 }
@@ -28,8 +29,12 @@ export interface Role {
   name: string,
   weight: number,
   description: string,
+  event_type: string,
+  entry_code: string,
+  admin_only: boolean,
+  support_text: string,
   created_by: string,
-  created_at: string
+  created_at: string,
 }
 
 const ENTRIES = 'entries';
@@ -45,10 +50,10 @@ export class SupabaseService {
   supabase: SupabaseClient;
   entriesSubscribed: boolean = false;
 
-  private _currentUser: BehaviorSubject<any> = new BehaviorSubject(null);
-  private _entries: BehaviorSubject<any> = new BehaviorSubject([]);
+  private _currentUser = new BehaviorSubject<any>(null);
+  private _entry = new BehaviorSubject<Entry | null>(null);
   private _categories = new BehaviorSubject<Category[]>([]);
-  private _roles: BehaviorSubject<any> = new BehaviorSubject([]);
+  private _roles = new BehaviorSubject<Role[]>([]);
 
   constructor(private router: Router) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabasePublishableKey, {
@@ -63,7 +68,6 @@ export class SupabaseService {
 
       if (event == 'SIGNED_IN') {
         this._currentUser.next(session?.user);
-        this.loadEntries();
       } else {
         this._currentUser.next(false);
       }
@@ -107,8 +111,8 @@ export class SupabaseService {
     return this._roles.asObservable();
   }
 
-  get entries() {
-    return this._entries.asObservable();
+  get entry() {
+    return this._entry.asObservable();
   }
 
   get currentUser() {
@@ -128,19 +132,42 @@ export class SupabaseService {
     const query = await this.supabase.from(ROLES).select('*').eq('category_id', cat_id);
     console.log("error ", query.error);
     console.log("data", query.data);
-    this._roles.next(query.data);
+    if(query.data) this._roles.next(query.data);
   }
 
-  async loadEntries() {
-    const query = await this.supabase.from(ENTRIES).select('*');
-    // console.log(query.data);
-    this._entries.next(query.data);
+  async loadEntry(role_id: string) {
+    const entry = await this.getEntry(role_id);
+    this._entry.next(entry);
+    return entry;
+  }
+
+  async getEntry(role_id: string): Promise<Entry | null> {
+    const user = await this.supabase.auth.getUser();
+
+    if (user.error) {
+      console.log(user.error);
+      return null;
+    }
+
+    const query = await this.supabase.from(ENTRIES).select('*').match({ user_id: user.data.user?.id, role_id }).maybeSingle();
+    
+    if (query.error) {
+      console.log(query.error);
+      //this._entryError.next(query.error);
+      return null;
+    }
+    // } else {
+    //   console.log("no entry error");
+    //   this._entryError.next(null);
+    // }
+    
+    return query.data;
   }
 
   // CRUD functions
 
   // entries
-  async addEntry(role_id: string, hours: number) {
+  async addEntry(role_id: string, hours: number, notes: string) {
     const user_id = await this.supabase.auth.getUser();
 
     if (user_id.error) {
@@ -151,18 +178,20 @@ export class SupabaseService {
     const newEntry = {
       user_id: user_id.data.user?.id,
       role_id,
-      hours
+      hours,
+      notes
     }
 
-    const result = await this.supabase.from(ENTRIES).insert(newEntry);
+    await this.supabase.from(ENTRIES).insert(newEntry);
   }
 
   async removeEntry(id: any) {
     await this.supabase.from(ENTRIES).delete().match({ id });
   }
 
-  async updateEntry(id: any, hours: number) {
-    await this.supabase.from(ENTRIES).update({ hours }).match({ id });
+  async updateEntry(role_id: any, hours: number, notes: string) {
+    const user_id = await this.supabase.auth.getUser();
+    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user_id.data.user?.id, role_id: role_id });
   }
   
   handleEntriesChange() {
@@ -181,7 +210,7 @@ export class SupabaseService {
       },
       (payload) => {
         console.log(payload);
-        this.loadEntries();
+        // this.loadEntry();
       }
     )
     .subscribe();
@@ -192,5 +221,11 @@ export class SupabaseService {
   // categories
 
   // roles
+
+  async getRole(role_id: string): Promise<Role | null> {
+    const query = await this.supabase.from(ROLES).select('*').eq('id', role_id).single();
+    if (query.data) return query.data;
+    else return null;
+  }
   
 }

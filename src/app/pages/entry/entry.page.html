@@ -1,13 +1,28 @@
-<!-- <ion-header [translucent]="true">
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>entry</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/category/{{cat_id}}"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-header>
     <ion-toolbar>
-      <ion-title size="large">entry</ion-title>
+      <ion-title>{{ role_info?.name }}</ion-title>
     </ion-toolbar>
   </ion-header>
-</ion-content> -->
+  <ion-item> 
+    <ion-input [(ngModel)]="hours" label="Enter number of {{role_info?.event_type}}" type="number" labelPlacement="floating" placeholder="0.0"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-textarea [(ngModel)]="notes" label="Notes" [autoGrow]="true" labelPlacement="stacked"></ion-textarea>
+  </ion-item>
+  <ion-footer>
+    <ion-button expand="block"  (click)="saveChanges()">Save Changes</ion-button>
+  </ion-footer>
+</ion-content>
+
+
+
+
