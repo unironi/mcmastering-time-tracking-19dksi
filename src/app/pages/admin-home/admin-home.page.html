@@ -49,14 +49,29 @@
 
   <ion-list>
     @for (member of (group_members$ | async); track member.user_id) {
-      <ion-item [routerLink]="['./user', member.user_id]">
+      <ion-item>
         <ion-label>{{ member.user_id }}</ion-label>
         <ion-buttons>
-          <ion-button fill="solid" size="medium">
+          <ion-button fill="solid" size="medium" [routerLink]="['./user', member.user_id]">
             See User
             <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
           </ion-button>
-          <ion-button color="danger" (click)="removeUser(member.user_id)">Remove</ion-button>
+          <ion-button id="open-confirmation-{{member.user_id}}" color="danger">Remove</ion-button>
+          <ion-modal #removeModal trigger="open-confirmation-{{member.user_id}}">
+            <ng-template>
+              <ion-header>
+                <ion-toolbar>
+                  <ion-buttons slot="end">
+                    <ion-button (click)="removeModal.dismiss()">Cancel</ion-button>
+                  </ion-buttons>
+                </ion-toolbar>
+              </ion-header>
+              <ion-content class="ion-padding">
+                <ion-label>Are you sure you want to remove {{ member.user_id }}?</ion-label>
+                <ion-button color="danger" solid="true" (click)="removeUser(member.user_id)">Remove User</ion-button>
+              </ion-content>
+            </ng-template>
+          </ion-modal>
         </ion-buttons>
       </ion-item>
       
