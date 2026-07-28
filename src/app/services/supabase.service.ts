@@ -54,6 +54,7 @@ export class SupabaseService {
   private _entry = new BehaviorSubject<Entry | null>(null);
   private _categories = new BehaviorSubject<Category[]>([]);
   private _roles = new BehaviorSubject<Role[]>([]);
+  private _members = new BehaviorSubject<any[]>([]);
 
   constructor(private router: Router) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabasePublishableKey, {
@@ -101,7 +102,7 @@ export class SupabaseService {
     this.router.navigateByUrl('/');
   }
 
-  // Getters
+  // Getters (post loading)
 
   get categories() {
     return this._categories.asObservable();
@@ -119,7 +120,11 @@ export class SupabaseService {
     return this._currentUser.asObservable();
   }
 
-  // fetch updates
+  get members() {
+    return this._members.asObservable();
+  }
+
+  // Loaders
 
   async loadCategories() {
     const query = await this.supabase.from(CATEGORIES).select('*');
@@ -135,12 +140,31 @@ export class SupabaseService {
     if(query.data) this._roles.next(query.data);
   }
 
+  async loadMembers() {
+    const user = await this.supabase.auth.getUser();
+
+    if (user.error) {
+      console.log(user.error);
+      return;
+    }
+
+    const query = await this.supabase.from(GROUP_MEMBERS).select('*');
+    
+    if (query.error) {
+      console.log(query.error);
+      return;
+    }
+
+    this._members.next(query.data);
+  }
+
   async loadEntry(role_id: string) {
     const entry = await this.getEntry(role_id);
     this._entry.next(entry);
     return entry;
   }
 
+  // getter (pre-loading)
   async getEntry(role_id: string): Promise<Entry | null> {
     const user = await this.supabase.auth.getUser();
 
@@ -153,14 +177,20 @@ export class SupabaseService {
     
     if (query.error) {
       console.log(query.error);
-      //this._entryError.next(query.error);
       return null;
     }
-    // } else {
-    //   console.log("no entry error");
-    //   this._entryError.next(null);
-    // }
     
+    return query.data;
+  }
+
+  async getRole(role_id: string): Promise<Role | null> {
+    const query = await this.supabase.from(ROLES).select('*').eq('id', role_id).single();
+
+    if (query.error) {
+      console.log(query.error);
+      return null;
+    }
+
     return query.data;
   }
 
@@ -168,15 +198,15 @@ export class SupabaseService {
 
   // entries
   async addEntry(role_id: string, hours: number, notes: string) {
-    const user_id = await this.supabase.auth.getUser();
+    const user = await this.supabase.auth.getUser();
 
-    if (user_id.error) {
-      console.log(user_id.error);
+    if (user.error) {
+      console.log(user.error);
       return;
     }
 
     const newEntry = {
-      user_id: user_id.data.user?.id,
+      user_id: user.data.user?.id,
       role_id,
       hours,
       notes
@@ -190,9 +220,67 @@ export class SupabaseService {
   }
 
   async updateEntry(role_id: any, hours: number, notes: string) {
-    const user_id = await this.supabase.auth.getUser();
-    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user_id.data.user?.id, role_id: role_id });
+    const user = await this.supabase.auth.getUser();
+    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user.data.user?.id, role_id: role_id });
   }
+
+  // members
+
+  async inviteUser(email: string) {
+    // making sure invitee is admin of group
+    const user = await this.supabase.auth.getUser();
+
+    if (user.error) {
+      console.log(user.error);
+      return;
+    }
+
+    const admin_id = user.data.user.id;
+    const admin_in_group = await this.supabase.from(GROUP_MEMBERS).select('*').match({user_id: admin_id}).single();
+    
+    if (admin_in_group.data.is_admin) {
+      const { data, error } = await this.supabase.auth.admin.inviteUserByEmail(email);
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      console.log(data);
+      return data;
+    }
+    console.log("user is not admin");
+    return;
+  }
+
+  async removeMember(user_id: string) {
+    // making sure user who is removing group member is admin of group
+    const user = await this.supabase.auth.getUser();
+
+    if (user.error) {
+      console.log(user.error);
+      return;
+    }
+
+    const admin_id = user.data.user.id;
+    const admin_in_group = await this.supabase.from(GROUP_MEMBERS).select('*').match({user_id: admin_id}).single();
+    
+    if (admin_in_group.data.is_admin) {
+      const { data, error } = await this.supabase.from(GROUP_MEMBERS).delete().match({user_id});
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      console.log(data);
+      return data;
+    }
+    console.log("user is not admin");
+    return;
+  }
+
+  // handler
   
   handleEntriesChange() {
     if (this.entriesSubscribed) return;
@@ -218,14 +306,20 @@ export class SupabaseService {
     this.entriesSubscribed = true;
   }
 
-  // categories
+  // download entries
 
-  // roles
+  async downloadEntries() {
+    const { data, error } = await this.supabase.from(ENTRIES).select().csv();
 
-  async getRole(role_id: string): Promise<Role | null> {
-    const query = await this.supabase.from(ROLES).select('*').eq('id', role_id).single();
-    if (query.data) return query.data;
-    else return null;
+    if (error) {
+      console.log(error);
+      return;
+    }
+    return data;
   }
+
+  
+
+ 
   
 }

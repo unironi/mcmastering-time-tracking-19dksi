@@ -27,6 +27,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/entry/entry.module').then( m => m.EntryPageModule),
     canMatch: [authGuard]
   },
+  {
+    path: 'admin-home',
+    loadChildren: () => import('./pages/admin-home/admin-home.module').then( m => m.AdminHomePageModule)
+  },
+  {
+    path: 'admin-home/:user_id',
+    loadChildren: () => import('./pages/admin-view-user/admin-view-user.module').then( m => m.AdminViewUserPageModule)
+  },
 ];
 
 @NgModule({

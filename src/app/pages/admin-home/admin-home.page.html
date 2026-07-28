@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Admin View</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="downloadCSV()">
+        <ion-icon name="download-outline" slot="start"></ion-icon>
+        Download All
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Members</ion-title>
+      <ion-buttons slot="end">
+        <ion-button id="open-modal" expand="block">
+          <ion-icon name="person-add-outline" slot="start"></ion-icon>
+          Invite
+        </ion-button>
+      </ion-buttons>
+      <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar>
+              <ion-title>Invite User</ion-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="cancel()">Cancel</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding">
+            <ion-item>
+              <ion-input
+                label="Enter email address"
+                labelPlacement="stacked"
+                type="email"
+                placeholder="johndoe@gmail.com"
+                [(ngModel)]="email"
+              ></ion-input>
+            </ion-item>
+            <ion-button expand="block" solid="true" (click)="confirm()" [strong]="true">Send Invite</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    @for (member of (group_members$ | async); track member.user_id) {
+      <ion-item>
+        <ion-label>{{ member.user_id }}</ion-label>
+        <ion-buttons>
+          <ion-button fill="solid" size="medium">
+            See User
+            <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="removeUser(member.user_id)">Remove</ion-button>
+        </ion-buttons>
+      </ion-item>
+      
+    }
+  </ion-list>
+</ion-content>
