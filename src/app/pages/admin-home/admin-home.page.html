@@ -49,7 +49,7 @@
 
   <ion-list>
     @for (member of (group_members$ | async); track member.user_id) {
-      <ion-item>
+      <ion-item [routerLink]="['./user', member.user_id]">
         <ion-label>{{ member.user_id }}</ion-label>
         <ion-buttons>
           <ion-button fill="solid" size="medium">

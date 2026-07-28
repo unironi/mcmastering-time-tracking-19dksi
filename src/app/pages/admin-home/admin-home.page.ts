@@ -5,11 +5,13 @@ import { SupabaseService } from '../../services/supabase.service';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DownloadService } from '../../services/download.service';
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-admin-home',
   templateUrl: './admin-home.page.html',
   styleUrls: ['./admin-home.page.scss'],
-  imports: [FormsModule, AsyncPipe, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton]
+  imports: [RouterLink, FormsModule, AsyncPipe, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton]
 })
 
 export class AdminHomePage implements OnInit {

@@ -32,7 +32,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin-home/admin-home.module').then( m => m.AdminHomePageModule)
   },
   {
-    path: 'admin-home/:user_id',
+    path: 'admin-home/user/:user_id',
     loadChildren: () => import('./pages/admin-view-user/admin-view-user.module').then( m => m.AdminViewUserPageModule)
   },
 ];

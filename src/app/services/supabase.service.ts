@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -55,6 +55,7 @@ export class SupabaseService {
   private _categories = new BehaviorSubject<Category[]>([]);
   private _roles = new BehaviorSubject<Role[]>([]);
   private _members = new BehaviorSubject<any[]>([]);
+  private _userEntries = new BehaviorSubject<any[]>([]);
 
   constructor(private router: Router) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabasePublishableKey, {
@@ -124,20 +125,26 @@ export class SupabaseService {
     return this._members.asObservable();
   }
 
+  get userEntries() {
+    return this._userEntries.asObservable();
+  }
+
   // Loaders
 
   async loadCategories() {
-    const query = await this.supabase.from(CATEGORIES).select('*');
-    console.log("data ", query.data);
-    console.log("error ", query.error)
-    if(query.data) this._categories.next(query.data);
+    const {data, error} = await this.supabase.from(CATEGORIES).select('*');
+    if (error) {
+      console.log("error ", error)
+    }
+    if(data) this._categories.next(data);
   }
 
   async loadRoles(cat_id: string) {
-    const query = await this.supabase.from(ROLES).select('*').eq('category_id', cat_id);
-    console.log("error ", query.error);
-    console.log("data", query.data);
-    if(query.data) this._roles.next(query.data);
+    const {data, error} = await this.supabase.from(ROLES).select('*').eq('category_id', cat_id);
+    if (error) {
+      console.log("error ", error)
+    }
+    if(data) this._roles.next(data);
   }
 
   async loadMembers() {
@@ -148,20 +155,28 @@ export class SupabaseService {
       return;
     }
 
-    const query = await this.supabase.from(GROUP_MEMBERS).select('*');
+    const {data, error} = await this.supabase.from(GROUP_MEMBERS).select('*');
     
-    if (query.error) {
-      console.log(query.error);
+    if (error) {
+      console.log(error);
       return;
     }
 
-    this._members.next(query.data);
+    this._members.next(data);
   }
 
   async loadEntry(role_id: string) {
     const entry = await this.getEntry(role_id);
     this._entry.next(entry);
     return entry;
+  }
+
+  async loadUserEntries(user_id: string) {
+    const {data, error} = await this.supabase.from(ENTRIES).select('*').match({ user_id });
+    if (error) {
+      console.log("error ", error)
+    }
+    if (data) this._userEntries.next(data);
   }
 
   // getter (pre-loading)

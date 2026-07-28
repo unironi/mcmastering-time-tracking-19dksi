@@ -1,13 +1,32 @@
-<!-- <ion-header [translucent]="true">
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>admin-view-user</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/admin-home"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-header>
     <ion-toolbar>
       <ion-title size="large">admin-view-user</ion-title>
     </ion-toolbar>
   </ion-header>
-</ion-content> -->
+  <ion-grid>
+    <ion-row class="header-row">
+      <ion-col>Role</ion-col>
+      <ion-col size="1.5">Number of Units</ion-col>
+      <ion-col>Notes</ion-col>
+      <ion-col>Last Updated</ion-col>
+    </ion-row>
+    @for (entry of (user_entries$ | async); track entry) {
+      <ion-row>
+        <ion-col>{{ entry.role_id}}</ion-col>
+        <ion-col size="1.5">{{ entry.hours}}</ion-col>
+        <ion-col>{{ entry.notes}}</ion-col>
+        <ion-col>{{ entry.updated_at}}</ion-col>
+      </ion-row>
+    }
+  </ion-grid>
+  
+</ion-content>

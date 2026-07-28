@@ -1,0 +1,18 @@
+
+.header-row {
+  background-color: var(--ion-color-step-150, #f4f5f8); 
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid var(--ion-color-step-300, #d7d8da);
+  font-size: 1.1rem;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+ion-row {
+    text-align: center;
+    border-bottom: 1px solid var(--ion-color-step-300, #d7d8da);
+    border-radius: 10px;
+    margin: 10px;
+}
