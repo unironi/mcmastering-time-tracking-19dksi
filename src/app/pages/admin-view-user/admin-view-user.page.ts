@@ -17,14 +17,15 @@ export class AdminViewUserPage implements OnInit {
   private platform = inject(Platform);
   private supabaseService = inject(SupabaseService);
 
-  user_entries$ = this.supabaseService.userEntries;
+  // user_entries$ = this.supabaseService.userEntries;
+  user_entries!: any;
 
   constructor() {}
 
-  ngOnInit() {
+  async ngOnInit() {
     const user_id = this.activatedRoute.snapshot.paramMap.get('user_id') as string;
-    this.supabaseService.loadUserEntries(user_id);
-    console.log(this.user_entries$);
+    this.user_entries = await this.supabaseService.loadUserEntries(user_id);
+     console.log(this.user_entries);
   }
 
   getBackButtonText() {

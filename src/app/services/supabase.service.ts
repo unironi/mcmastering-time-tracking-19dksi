@@ -55,7 +55,7 @@ export class SupabaseService {
   private _categories = new BehaviorSubject<Category[]>([]);
   private _roles = new BehaviorSubject<Role[]>([]);
   private _members = new BehaviorSubject<any[]>([]);
-  private _userEntries = new BehaviorSubject<any[]>([]);
+  // private _userEntries = new BehaviorSubject<any[]>([]);
 
   constructor(private router: Router) {
     this.supabase = createClient(environment.supabaseUrl, environment.supabasePublishableKey, {
@@ -125,9 +125,9 @@ export class SupabaseService {
     return this._members.asObservable();
   }
 
-  get userEntries() {
-    return this._userEntries.asObservable();
-  }
+  // get userEntries() {
+  //   return this._userEntries.asObservable();
+  // }
 
   // Loaders
 
@@ -176,7 +176,8 @@ export class SupabaseService {
     if (error) {
       console.log("error ", error)
     }
-    if (data) this._userEntries.next(data);
+    // if (data) this._userEntries.next(data);
+    return data;
   }
 
   // getter (pre-loading)

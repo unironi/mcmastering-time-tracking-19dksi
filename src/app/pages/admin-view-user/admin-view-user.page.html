@@ -19,7 +19,7 @@
       <ion-col>Notes</ion-col>
       <ion-col>Last Updated</ion-col>
     </ion-row>
-    @for (entry of (user_entries$ | async); track entry) {
+    @for (entry of user_entries; track entry) {
       <ion-row>
         <ion-col>{{ entry.role_id}}</ion-col>
         <ion-col size="1.5">{{ entry.hours}}</ion-col>
