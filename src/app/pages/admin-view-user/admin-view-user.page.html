@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button [text]="getBackButtonText()" defaultHref="/admin-home"></ion-back-button>
+      <ion-back-button text="Back" defaultHref="/admin-home"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -9,22 +9,26 @@
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-toolbar>
-      <ion-title size="large">admin-view-user</ion-title>
+      <ion-title size="large">{{ user_info?.full_name }}</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-grid>
     <ion-row class="header-row">
+      <ion-col size="1.5">Role Entry Code</ion-col>
       <ion-col>Role</ion-col>
-      <ion-col size="1.5">Number of Units</ion-col>
+      <ion-col size="1">Role Weight</ion-col>
+      <ion-col size="1">Number of Units</ion-col>
       <ion-col>Notes</ion-col>
       <ion-col>Last Updated</ion-col>
     </ion-row>
-    @for (entry of user_entries; track entry) {
+    @for (item of role_info_array; track item) {
       <ion-row>
-        <ion-col>{{ entry.role_id}}</ion-col>
-        <ion-col size="1.5">{{ entry.hours}}</ion-col>
-        <ion-col>{{ entry.notes}}</ion-col>
-        <ion-col>{{ entry.updated_at}}</ion-col>
+        <ion-col size="1.5">{{ item[1].entry_code }}</ion-col>
+        <ion-col>{{ item[1].name }}</ion-col>
+        <ion-col size="1">{{ item[1].weight }}</ion-col>
+        <ion-col size="1">{{ item[0].hours }} {{ item[1].event_type }}</ion-col>
+        <ion-col>{{ item[1].support_text }} {{ item[0].notes }}</ion-col>
+        <ion-col>{{ item[0].updated_at ?? item[0].created_at }}</ion-col>
       </ion-row>
     }
   </ion-grid>

@@ -1,17 +1,26 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-button slot="start">
+      <ion-icon name="download-outline" ></ion-icon>
+    </ion-button>
+    
     <ion-title>
       Home
     </ion-title>
+
+    <ion-button slot="end">
+      <ion-icon name="log-out-outline"></ion-icon>
+      Sign Out
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   
-  <ion-header collapse="condense">
+  <ion-header>
     <ion-toolbar>
-      <ion-title size="large">
-        Home
+      <ion-title>
+        Select Category
       </ion-title>
     </ion-toolbar>
   </ion-header>

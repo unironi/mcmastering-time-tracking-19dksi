@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { IonFooter, IonButton, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
+import { IonToast, IonFooter, IonButton, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
 import { Platform } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { Role, SupabaseService } from '../../services/supabase.service';
@@ -11,7 +11,7 @@ import { map } from 'rxjs';
   selector: 'app-entry',
   templateUrl: './entry.page.html',
   styleUrls: ['./entry.page.scss'],
-  imports: [ FormsModule, AsyncPipe, IonButton, IonFooter, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList ]
+  imports: [ FormsModule, AsyncPipe, IonToast, IonButton, IonFooter, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList ]
 })
 export class EntryPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);

@@ -19,17 +19,22 @@ export class AdminViewUserPage implements OnInit {
 
   // user_entries$ = this.supabaseService.userEntries;
   user_entries!: any;
+  user_info!: any;
+  role_info_array: any[] = [];
 
   constructor() {}
 
   async ngOnInit() {
     const user_id = this.activatedRoute.snapshot.paramMap.get('user_id') as string;
-    this.user_entries = await this.supabaseService.loadUserEntries(user_id);
-     console.log(this.user_entries);
-  }
+    
+    this.user_info = await this.supabaseService.getUserInfo(user_id);
 
-  getBackButtonText() {
-    const isIos = this.platform.is('ios')
-    return isIos ? 'Categories' : '';
+    this.user_entries = await this.supabaseService.loadUserEntries(user_id);
+
+    for (const entry of this.user_entries) {
+      const role_info = await this.supabaseService.getRole(entry.role_id);
+      this.role_info_array.push([entry, role_info]);
+    }
+    
   }
 }

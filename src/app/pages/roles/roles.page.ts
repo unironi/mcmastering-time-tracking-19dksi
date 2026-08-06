@@ -6,6 +6,7 @@ import { IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent,
 import { RoleComponent } from '../../components/role/role.component';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-roles',
@@ -18,20 +19,20 @@ export class RolesPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private platform = inject(Platform);
   private supabaseService = inject(SupabaseService);
-
-  roles$ = this.supabaseService.roles;
-
+  
   constructor() {}
+
+  // unlikely that user can access admin-only roles since admin-only categories are filtered out, but this is in place just in case
+  // also there is one category that has a mixture of admin-only and regular-user roles
+  roles$ = this.supabaseService.roles.pipe(
+      map((roles) => roles.filter((r) => r.admin_only == false)),
+    ); 
 
   ngOnInit() {
     const cat_id = this.activatedRoute.snapshot.paramMap.get('category_id') as string;
     this.supabaseService.loadRoles(cat_id);
     console.log(this.roles$);
   }
-
-  getBackButtonText() {
-    const isIos = this.platform.is('ios')
-    return isIos ? 'Categories' : '';
-  }
+  
 }
 

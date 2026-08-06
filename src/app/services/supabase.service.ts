@@ -19,6 +19,7 @@ export interface Category {
   id: string,
   group_id: string,
   name: string,
+  admin_only: boolean,
   created_by: string,
   created_at: string
 }
@@ -78,9 +79,17 @@ export class SupabaseService {
 
   // Registration functions
 
-  async signUp(credentials: { email: any, password: any }) {
+  async signUp(credentials: { email: any, password: any, full_name: any }) {
     return new Promise(async (resolve, reject) => {
-      const { error, data } = await this.supabase.auth.signUp(credentials); 
+      const { error, data } = await this.supabase.auth.signUp({
+        email: credentials.email,
+        password: credentials.password,
+        options: {
+          data: {
+            full_name: credentials.full_name
+          }
+        }
+      }); 
       if (error) reject(error);
       else resolve(data);
     })
@@ -189,25 +198,36 @@ export class SupabaseService {
       return null;
     }
 
-    const query = await this.supabase.from(ENTRIES).select('*').match({ user_id: user.data.user?.id, role_id }).maybeSingle();
+    const {data, error} = await this.supabase.from(ENTRIES).select('*').match({ user_id: user.data.user?.id, role_id }).maybeSingle();
     
-    if (query.error) {
-      console.log(query.error);
+    if (error) {
+      console.log(error);
       return null;
     }
     
-    return query.data;
+    return data;
   }
 
   async getRole(role_id: string): Promise<Role | null> {
-    const query = await this.supabase.from(ROLES).select('*').eq('id', role_id).single();
+    const {data, error} = await this.supabase.from(ROLES).select('*').eq('id', role_id).single();
 
-    if (query.error) {
-      console.log(query.error);
+    if (error) {
+      console.log(error);
       return null;
     }
 
-    return query.data;
+    return data;
+  }
+
+  async getUserInfo(user_id: string) {
+    const {data, error} = await this.supabase.from(GROUP_MEMBERS).select().match({user_id}).single();
+    
+    if (error) {
+      console.log(error);
+      return null;
+    }
+
+    return data;
   }
 
   // CRUD functions

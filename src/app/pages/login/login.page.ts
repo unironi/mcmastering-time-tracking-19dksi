@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
  import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
- import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+ import { IonImg, IonButton, IonContent, IonHeader, IonInput, IonItem, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
@@ -14,6 +14,7 @@ import { SupabaseService } from '../../services/supabase.service';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    IonImg,
     IonContent,
     IonHeader,
     IonToolbar,
@@ -38,6 +39,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     this.credentials = this.fb.group({
+      full_name: [''],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });

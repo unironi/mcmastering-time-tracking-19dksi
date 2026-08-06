@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Admin View</ion-title>
+    <ion-title class="ion-text-center">Admin View</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="downloadCSV()">
         <ion-icon name="download-outline" slot="start"></ion-icon>
@@ -13,7 +13,7 @@
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-toolbar>
-      <ion-title>Members</ion-title>
+      <ion-title slot="start">Members</ion-title>
       <ion-buttons slot="end">
         <ion-button id="open-modal" expand="block">
           <ion-icon name="person-add-outline" slot="start"></ion-icon>
@@ -50,7 +50,7 @@
   <ion-list>
     @for (member of (group_members$ | async); track member.user_id) {
       <ion-item>
-        <ion-label>{{ member.user_id }}</ion-label>
+        <ion-label>{{ member.full_name }}</ion-label>
         <ion-buttons>
           <ion-button fill="solid" size="medium" [routerLink]="['./user', member.user_id]">
             See User
@@ -67,7 +67,7 @@
                 </ion-toolbar>
               </ion-header>
               <ion-content class="ion-padding">
-                <ion-label>Are you sure you want to remove {{ member.user_id }}?</ion-label>
+                <ion-label>Are you sure you want to remove {{ member.full_name }}?</ion-label>
                 <ion-button color="danger" solid="true" (click)="removeUser(member.user_id)">Remove User</ion-button>
               </ion-content>
             </ng-template>

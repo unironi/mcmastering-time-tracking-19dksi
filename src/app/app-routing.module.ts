@@ -29,11 +29,13 @@ const routes: Routes = [
   },
   {
     path: 'admin-home',
-    loadChildren: () => import('./pages/admin-home/admin-home.module').then( m => m.AdminHomePageModule)
+    loadChildren: () => import('./pages/admin-home/admin-home.module').then( m => m.AdminHomePageModule),
+    canMatch: [authGuard]
   },
   {
     path: 'admin-home/user/:user_id',
-    loadChildren: () => import('./pages/admin-view-user/admin-view-user.module').then( m => m.AdminViewUserPageModule)
+    loadChildren: () => import('./pages/admin-view-user/admin-view-user.module').then( m => m.AdminViewUserPageModule),
+    canMatch: [authGuard]
   },
 ];
 

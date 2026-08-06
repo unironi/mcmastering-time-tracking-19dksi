@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button [text]="getBackButtonText()" defaultHref="/category/{{cat_id}}"></ion-back-button>
+      <ion-back-button text="Back to Roles" defaultHref="/category/{{cat_id}}"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -16,10 +16,11 @@
     <ion-input [(ngModel)]="hours" label="Enter number of {{role_info?.event_type}}" type="number" labelPlacement="floating" placeholder="0.0"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-textarea [(ngModel)]="notes" label="Notes" [autoGrow]="true" labelPlacement="stacked"></ion-textarea>
+    <ion-textarea [(ngModel)]="notes" label="{{role_info?.support_text ?? 'Notes'}}" [autoGrow]="true" labelPlacement="stacked"></ion-textarea>
   </ion-item>
   <ion-footer>
-    <ion-button expand="block"  (click)="saveChanges()">Save Changes</ion-button>
+    <ion-button id="open-toast" expand="block"  (click)="saveChanges()" color="secondary">Save Changes</ion-button>
+    <ion-toast trigger="open-toast" message="Saved!" [duration]="5000"></ion-toast>
   </ion-footer>
 </ion-content>
 

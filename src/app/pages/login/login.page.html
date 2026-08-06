@@ -1,12 +1,17 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Registration</ion-title>
+    <ion-title>Welcome</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-img src="assets/pmm_logo.jpg" alt="PMM Logo"></ion-img>
+
   <form (ngSubmit)="login()" [formGroup]="credentials">
     <div class="input-group">
+      <ion-item>
+        <ion-input placeholder="John Doe" formControlName="full_name"></ion-input>
+      </ion-item>
       <ion-item>
         <ion-input placeholder="john@doe.com" formControlName="email"></ion-input>
       </ion-item>
