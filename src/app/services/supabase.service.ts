@@ -140,6 +140,12 @@ export class SupabaseService {
 
   // Loaders
 
+  async getUser() {
+    const user = await this.supabase.auth.getUser();
+
+    return user;
+  }
+
   async loadCategories() {
     const {data, error} = await this.supabase.from(CATEGORIES).select('*');
     if (error) {
@@ -157,7 +163,7 @@ export class SupabaseService {
   }
 
   async loadMembers() {
-    const user = await this.supabase.auth.getUser();
+    const user = await this.getUser();
 
     if (user.error) {
       console.log(user.error);
@@ -191,7 +197,7 @@ export class SupabaseService {
 
   // getter (pre-loading)
   async getEntry(role_id: string): Promise<Entry | null> {
-    const user = await this.supabase.auth.getUser();
+    const user = await this.getUser();
 
     if (user.error) {
       console.log(user.error);
@@ -219,7 +225,7 @@ export class SupabaseService {
     return data;
   }
 
-  async getUserInfo(user_id: string) {
+  async getMemberInfo(user_id: string) {
     const {data, error} = await this.supabase.from(GROUP_MEMBERS).select().match({user_id}).single();
     
     if (error) {
@@ -234,7 +240,7 @@ export class SupabaseService {
 
   // entries
   async addEntry(role_id: string, hours: number, notes: string) {
-    const user = await this.supabase.auth.getUser();
+    const user = await this.getUser();
 
     if (user.error) {
       console.log(user.error);
@@ -251,20 +257,21 @@ export class SupabaseService {
     await this.supabase.from(ENTRIES).insert(newEntry);
   }
 
-  async removeEntry(id: any) {
-    await this.supabase.from(ENTRIES).delete().match({ id });
+  async removeEntry(role_id: any) {
+    const user = await this.getUser();
+    await this.supabase.from(ENTRIES).delete().match({ user_id: user.data.user?.id, role_id });
   }
 
   async updateEntry(role_id: any, hours: number, notes: string) {
-    const user = await this.supabase.auth.getUser();
-    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user.data.user?.id, role_id: role_id });
+    const user = await this.getUser();
+    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user.data.user?.id, role_id });
   }
 
   // members
 
   async inviteUser(email: string) {
     // making sure invitee is admin of group
-    const user = await this.supabase.auth.getUser();
+    const user = await this.getUser();
 
     if (user.error) {
       console.log(user.error);
@@ -291,7 +298,7 @@ export class SupabaseService {
 
   async removeMember(user_id: string) {
     // making sure user who is removing group member is admin of group
-    const user = await this.supabase.auth.getUser();
+    const user = await this.getUser();
 
     if (user.error) {
       console.log(user.error);

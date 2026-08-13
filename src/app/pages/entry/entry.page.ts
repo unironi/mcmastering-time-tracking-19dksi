@@ -53,11 +53,19 @@ export class EntryPage implements OnInit {
     const entry = await this.supabaseService.getEntry(this.role_id);
   // this.entry$.subscribe(async entry => {
     if (entry) { // if entry exists, update it
-      await this.supabaseService.updateEntry(this.role_id, this.hours, this.notes);
-      console.log("saved changes");
-    } else { // otherwise create the entry
-      await this.supabaseService.addEntry(this.role_id, this.hours, this.notes);
-      console.log("new entry added");
+      if (this.hours <= 0 && this.notes == "") {
+        await this.supabaseService.removeEntry(this.role_id);
+        console.log("removed entry");
+      } else {
+        await this.supabaseService.updateEntry(this.role_id, this.hours, this.notes);
+        console.log("saved changes");
+      }
+      
+    } else { // otherwise create the entry if hours and notes has been populated
+      if (this.hours > 0 && this.notes != null) {
+        await this.supabaseService.addEntry(this.role_id, this.hours, this.notes);
+        console.log("new entry added");
+      }
     }
     await this.supabaseService.loadEntry(this.role_id);
   // })

@@ -27,7 +27,7 @@ export class AdminViewUserPage implements OnInit {
   async ngOnInit() {
     const user_id = this.activatedRoute.snapshot.paramMap.get('user_id') as string;
     
-    this.user_info = await this.supabaseService.getUserInfo(user_id);
+    this.user_info = await this.supabaseService.getMemberInfo(user_id);
 
     this.user_entries = await this.supabaseService.loadUserEntries(user_id);
 

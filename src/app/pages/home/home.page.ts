@@ -5,6 +5,7 @@ import { SupabaseService } from '../../services/supabase.service';
 import { IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
 import { AsyncPipe } from '@angular/common';
 import { map } from 'rxjs';
+import { DownloadService } from '../../services/download.service';
 
 @Component({
   selector: 'app-home',
@@ -28,10 +29,24 @@ export class HomePage implements OnInit {
     map((categories) => categories.filter((cat) => cat.admin_only == false)),
   ); // filtering out admin-only categories so regular users cannot access them and their roles
 
+  private download = inject(DownloadService);
+  
   constructor() {}
 
   ngOnInit() {
     this.supabaseService.loadCategories();
+  }
+
+  async downloadCSV() {
+    const csv_data = await this.supabaseService.downloadEntries();
+    if (csv_data) {
+      this.download.downloadFile(csv_data, 'your_entries.csv');
+    }
+    return;
+  }
+
+  async signOut() {
+    await this.supabaseService.signOut();
   }
 
   refresh(ev: any) {

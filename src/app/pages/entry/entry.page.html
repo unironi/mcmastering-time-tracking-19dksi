@@ -13,10 +13,10 @@
     </ion-toolbar>
   </ion-header>
   <ion-item> 
-    <ion-input [(ngModel)]="hours" label="Enter number of {{role_info?.event_type}}" type="number" labelPlacement="floating" placeholder="0.0"></ion-input>
+    <ion-input [(ngModel)]="hours" value="0" label="Enter number of {{role_info?.event_type}}" type="number" labelPlacement="floating" placeholder="0.0"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-textarea [(ngModel)]="notes" label="{{role_info?.support_text ?? 'Notes'}}" [autoGrow]="true" labelPlacement="stacked"></ion-textarea>
+    <ion-textarea [(ngModel)]="notes" value="" label="{{role_info?.support_text ?? 'Notes'}}" [autoGrow]="true" labelPlacement="stacked"></ion-textarea>
   </ion-item>
   <ion-footer>
     <ion-button id="open-toast" expand="block"  (click)="saveChanges()" color="secondary">Save Changes</ion-button>
