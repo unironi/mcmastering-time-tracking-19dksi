@@ -10,6 +10,9 @@
   <ion-header>
     <ion-toolbar>
       <ion-title size="large">{{ user_info?.full_name }}</ion-title>
+      <ion-button slot="end" (click)="downloadCSV()">
+        <ion-icon name="download-outline"></ion-icon>
+      </ion-button>
     </ion-toolbar>
   </ion-header>
   <ion-grid>

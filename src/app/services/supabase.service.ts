@@ -42,6 +42,7 @@ const ENTRIES = 'entries';
 const CATEGORIES = 'categories';
 const ROLES = 'roles';
 const GROUP_MEMBERS = 'group_members';
+const PROFILES = 'profiles';
 
 @Injectable({
   providedIn: 'root',
@@ -143,7 +144,12 @@ export class SupabaseService {
   async getUser() {
     const user = await this.supabase.auth.getUser();
 
-    return user;
+    if (user.error) {
+      console.log(user.error);
+      return null;
+    }
+
+    return user.data.user;
   }
 
   async loadCategories() {
@@ -163,13 +169,6 @@ export class SupabaseService {
   }
 
   async loadMembers() {
-    const user = await this.getUser();
-
-    if (user.error) {
-      console.log(user.error);
-      return;
-    }
-
     const {data, error} = await this.supabase.from(GROUP_MEMBERS).select('*');
     
     if (error) {
@@ -199,12 +198,7 @@ export class SupabaseService {
   async getEntry(role_id: string): Promise<Entry | null> {
     const user = await this.getUser();
 
-    if (user.error) {
-      console.log(user.error);
-      return null;
-    }
-
-    const {data, error} = await this.supabase.from(ENTRIES).select('*').match({ user_id: user.data.user?.id, role_id }).maybeSingle();
+    const {data, error} = await this.supabase.from(ENTRIES).select('*').match({ user_id: user?.id, role_id }).maybeSingle();
     
     if (error) {
       console.log(error);
@@ -241,15 +235,22 @@ export class SupabaseService {
   // entries
   async addEntry(role_id: string, hours: number, notes: string) {
     const user = await this.getUser();
+    
+    const user_id = user?.id;
 
-    if (user.error) {
-      console.log(user.error);
+    const user_in_group = await this.supabase.from(GROUP_MEMBERS).select("*").match({ user_id }).single();
+
+    if (user_in_group.error) {
+      console.log(user_in_group.error);
       return;
     }
 
+    const group_id = user_in_group.data.group_id;
+
     const newEntry = {
-      user_id: user.data.user?.id,
+      user_id,
       role_id,
+      group_id,
       hours,
       notes
     }
@@ -259,12 +260,12 @@ export class SupabaseService {
 
   async removeEntry(role_id: any) {
     const user = await this.getUser();
-    await this.supabase.from(ENTRIES).delete().match({ user_id: user.data.user?.id, role_id });
+    await this.supabase.from(ENTRIES).delete().match({ user_id: user?.id, role_id });
   }
 
   async updateEntry(role_id: any, hours: number, notes: string) {
     const user = await this.getUser();
-    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user.data.user?.id, role_id });
+    await this.supabase.from(ENTRIES).update({ hours, notes }).match({ user_id: user?.id, role_id });
   }
 
   // members
@@ -273,26 +274,28 @@ export class SupabaseService {
     // making sure invitee is admin of group
     const user = await this.getUser();
 
-    if (user.error) {
-      console.log(user.error);
-      return;
-    }
-
-    const admin_id = user.data.user.id;
-    const admin_in_group = await this.supabase.from(GROUP_MEMBERS).select('*').match({user_id: admin_id}).single();
+    const admin_id = user?.id;
+    const admin_in_group = await this.supabase.from(GROUP_MEMBERS).select('*').match({ user_id: admin_id }).single();
     
     if (admin_in_group.data.is_admin) {
-      const { data, error } = await this.supabase.auth.admin.inviteUserByEmail(email);
+      const add_user = await this.supabase.from(PROFILES).select('*').match({ email }).single();
 
-      if (error) {
-        console.log(error);
-        return;
+      if (add_user.error) {
+        console.log(add_user.error);
+        throw new Error("User does not exist");
       }
-
-      console.log(data);
-      return data;
+      
+      const new_member = {
+        user_id: add_user.data?.id,
+        group_id: admin_in_group.data.group_id,
+        is_admin: false,
+        full_name: add_user.data?.full_name,
+      }
+      await this.supabase.from(GROUP_MEMBERS).insert(new_member);
+    } else {
+      console.log("user is not admin");
     }
-    console.log("user is not admin");
+    
     return;
   }
 
@@ -300,12 +303,7 @@ export class SupabaseService {
     // making sure user who is removing group member is admin of group
     const user = await this.getUser();
 
-    if (user.error) {
-      console.log(user.error);
-      return;
-    }
-
-    const admin_id = user.data.user.id;
+    const admin_id = user?.id;
     const admin_in_group = await this.supabase.from(GROUP_MEMBERS).select('*').match({user_id: admin_id}).single();
     
     if (admin_in_group.data.is_admin) {
@@ -351,8 +349,10 @@ export class SupabaseService {
 
   // download entries
 
-  async downloadEntries() {
-    const { data, error } = await this.supabase.from(ENTRIES).select().csv();
+  async downloadEntries(user_id: string = '') {
+    const { data, error } = user_id
+      ? await this.supabase.from(ENTRIES).select().match({ user_id }).csv()
+      : await this.supabase.from(ENTRIES).select().csv();
 
     if (error) {
       console.log(error);
@@ -360,9 +360,5 @@ export class SupabaseService {
     }
     return data;
   }
-
-  
-
- 
   
 }

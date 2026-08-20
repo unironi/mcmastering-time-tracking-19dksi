@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  
+  supabaseUrl: 'https://mhuwcjrdlitsqntzsfbx.supabase.co',
+  supabasePublishableKey: 'sb_publishable_0RVKb5Io5NVsCNdJ1msQ3A_qAgDQ_eP',
+  supabaseServiceKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1odXdjanJkbGl0c3FudHpzZmJ4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzY4MTU4NiwiZXhwIjoyMDgzMjU3NTg2fQ.ZzJTia2x6sxEOREZ4S_Umhr38Qnc8Hv_X5n-uJYM2Oo'
 };
 
 /*

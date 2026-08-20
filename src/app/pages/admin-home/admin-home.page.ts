@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { OverlayEventDetail } from '@ionic/core/components';
-import { IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { IonToast, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
 import { SupabaseService } from '../../services/supabase.service';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,26 +11,33 @@ import { RouterLink } from '@angular/router';
   selector: 'app-admin-home',
   templateUrl: './admin-home.page.html',
   styleUrls: ['./admin-home.page.scss'],
-  imports: [RouterLink, FormsModule, AsyncPipe, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton]
+  imports: [RouterLink, FormsModule, AsyncPipe, IonToast, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton]
 })
 
 export class AdminHomePage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
 
   email!: string;
+  error = false;
 
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }
 
-  confirm() {
-    this.modal.dismiss(this.email, 'confirm');
+  async confirm() {
+    try {
+      await this.inviteUser();
+      this.modal.dismiss(this.email, 'confirm');
+    } catch (e) {
+      console.error(e);
+      this.error = true;
+    }
   }
 
   onWillDismiss(event: CustomEvent<OverlayEventDetail>) {
     if (event.detail.role === 'confirm') {
-      this.email = `${event.detail.data}`;
-      this.inviteUser(this.email);
+      // this.email = `${event.detail.data}`;
+     // this.inviteUser();
     }
   }
 
@@ -52,13 +59,22 @@ export class AdminHomePage implements OnInit {
     return;
   }
 
-  inviteUser(email: string) {
-    this.supabaseService.inviteUser(email);
+  async inviteUser() {
+    try {
+      await this.supabaseService.inviteUser(this.email);
+    } catch (e) {
+      throw e;
+    }
+    
   }
 
   removeUser(user_id: string) {
     this.supabaseService.removeMember(user_id);
     this.supabaseService.loadMembers();
+  }
+
+  setError(err: boolean) {
+    this.error = err;
   }
 
 

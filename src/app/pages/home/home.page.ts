@@ -30,15 +30,18 @@ export class HomePage implements OnInit {
   ); // filtering out admin-only categories so regular users cannot access them and their roles
 
   private download = inject(DownloadService);
+
+  user: any;
   
   constructor() {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.user = await this.supabaseService.getUser();
     this.supabaseService.loadCategories();
   }
 
   async downloadCSV() {
-    const csv_data = await this.supabaseService.downloadEntries();
+    const csv_data = await this.supabaseService.downloadEntries(this.user.id);
     if (csv_data) {
       this.download.downloadFile(csv_data, 'your_entries.csv');
     }
