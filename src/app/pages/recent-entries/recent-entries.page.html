@@ -1,0 +1,42 @@
+<!-- <ion-menu menuId="entries-menu" contentId="recent-entries">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <app-menu></app-menu>
+  </ion-content>
+</ion-menu> -->
+<!-- <div> -->
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <!-- <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons> -->
+      <ion-title>
+        Recent Entries
+      </ion-title>
+      <ion-button slot="end" [routerLink]="['/home']">
+        <ion-icon name="list-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content [fullscreen]="true">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          Your Entries
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-list>
+      @for (entry of entry_info_array; track entry) {
+      <app-listed-entry [entry]="entry"></app-listed-entry>
+      }
+    </ion-list>
+  </ion-content>
+
+<!-- </div> -->

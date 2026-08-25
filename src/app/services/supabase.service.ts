@@ -165,7 +165,8 @@ export class SupabaseService {
     if (error) {
       console.log("error ", error)
     }
-    if(data) this._roles.next(data);
+    if(data) this._roles.next(data); // redundant line atm since i'm not using the getter role (observable shared state glitch)
+    return data;
   }
 
   async loadMembers() {
@@ -210,6 +211,17 @@ export class SupabaseService {
 
   async getRole(role_id: string): Promise<Role | null> {
     const {data, error} = await this.supabase.from(ROLES).select('*').eq('id', role_id).single();
+
+    if (error) {
+      console.log(error);
+      return null;
+    }
+
+    return data;
+  }
+
+  async getCategory(cat_id: string): Promise<Category | null> {
+    const {data, error} = await this.supabase.from(CATEGORIES).select('*').eq('id', cat_id).single();
 
     if (error) {
       console.log(error);
@@ -270,6 +282,15 @@ export class SupabaseService {
 
   // members
 
+  async userIsAdmin() {
+    const user = await this.getUser();
+
+    const user_id = user?.id;
+    const user_member = await this.supabase.from(GROUP_MEMBERS).select('*').match({ user_id }).single();
+    
+    return user_member.data.is_admin;
+  }
+
   async inviteUser(email: string) {
     // making sure invitee is admin of group
     const user = await this.getUser();
@@ -301,12 +322,8 @@ export class SupabaseService {
 
   async removeMember(user_id: string) {
     // making sure user who is removing group member is admin of group
-    const user = await this.getUser();
 
-    const admin_id = user?.id;
-    const admin_in_group = await this.supabase.from(GROUP_MEMBERS).select('*').match({user_id: admin_id}).single();
-    
-    if (admin_in_group.data.is_admin) {
+    if (await this.userIsAdmin()) {
       const { data, error } = await this.supabase.from(GROUP_MEMBERS).delete().match({user_id});
 
       if (error) {

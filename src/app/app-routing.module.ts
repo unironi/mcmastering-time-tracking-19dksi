@@ -30,12 +30,22 @@ const routes: Routes = [
   {
     path: 'admin-home',
     loadChildren: () => import('./pages/admin-home/admin-home.module').then( m => m.AdminHomePageModule),
-    canMatch: [authGuard, adminGuard]
+    canMatch: [authGuard]
   },
   {
     path: 'admin-home/user/:user_id',
     loadChildren: () => import('./pages/admin-view-user/admin-view-user.module').then( m => m.AdminViewUserPageModule),
     canMatch: [authGuard, adminGuard]
+  },
+  {
+    path: 'recent-entries',
+    loadChildren: () => import('./pages/recent-entries/recent-entries.module').then( m => m.RecentEntriesPageModule),
+    canMatch: [authGuard]
+  },
+  {
+    path: 'recent-entries/category/:category_id/role/:role_id',
+    loadChildren: () => import('./pages/entry/entry.module').then( m => m.EntryPageModule),
+    canMatch: [authGuard]
   },
 ];
 

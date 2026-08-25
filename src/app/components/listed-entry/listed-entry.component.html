@@ -1,0 +1,10 @@
+@if (entry(); as entry) {
+  <ion-item [routerLink]="`./category/${entry[0].id}/role/${entry[1].id}`">
+    <ion-label class="ion-text-wrap">
+      <h2>{{ entry[1].name }}</h2>
+      <h3>{{ entry[0].name }}</h3>
+      <p>Weight: {{ entry[1].weight }}</p>
+      <p>Units Completed: {{ entry[2].hours }}</p>
+    </ion-label>
+  </ion-item>
+}

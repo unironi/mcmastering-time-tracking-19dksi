@@ -1,0 +1,22 @@
+.button-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.menu-button {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    // box-shadow: 1px 1px 1px var(--ion-color-background);
+    padding: 12px;
+    margin: 0;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    --border-radius: 0;
+}

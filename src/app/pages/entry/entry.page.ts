@@ -1,11 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { IonToast, IonFooter, IonButton, IonTextarea, IonInput, IonLabel, IonItem, IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
 import { Platform } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Role, SupabaseService } from '../../services/supabase.service';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-entry',
@@ -15,7 +14,7 @@ import { map } from 'rxjs';
 })
 export class EntryPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
-  private platform = inject(Platform);
+  private router = inject(Router);
   private supabaseService = inject(SupabaseService);
 
   // entry$ = this.supabaseService.entry;
@@ -44,11 +43,6 @@ export class EntryPage implements OnInit {
     // });
   }
 
-  getBackButtonText() {
-    const isIos = this.platform.is('ios')
-    return isIos ? 'Roles' : '';
-  }
-
   async saveChanges() {
     const entry = await this.supabaseService.getEntry(this.role_id);
   // this.entry$.subscribe(async entry => {
@@ -69,6 +63,17 @@ export class EntryPage implements OnInit {
     }
     await this.supabaseService.loadEntry(this.role_id);
   // })
+  }
+
+  async remove() {
+    await this.supabaseService.removeEntry(this.role_id);
+    this.hours = 0;
+    this.notes = "";
+    console.log("removed entry");
+  }
+
+  goBack() {
+    return this.router.url.includes('recent-entries') ? '/recent-entries' : `/category/${this.cat_id}`;
   }
 
 }

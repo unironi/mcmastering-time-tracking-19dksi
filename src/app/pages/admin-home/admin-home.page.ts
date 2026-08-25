@@ -45,9 +45,12 @@ export class AdminHomePage implements OnInit {
   private supabaseService = inject(SupabaseService);
   group_members$ = this.supabaseService.members;
 
+  is_admin: boolean = false;
+
   constructor() { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.is_admin = await this.supabaseService.userIsAdmin();
     this.supabaseService.loadMembers();
   }
 

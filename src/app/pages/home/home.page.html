@@ -1,33 +1,44 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-button slot="start" (click)="downloadCSV()">
-      <ion-icon name="download-outline"></ion-icon>
-    </ion-button>
-    
-    <ion-title>
-      Home
-    </ion-title>
-
-    <ion-button slot="end" (click)="signOut()">
-      <ion-icon name="log-out-outline"></ion-icon>
-      Sign Out
-    </ion-button>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  
-  <ion-header>
-    <ion-toolbar>
+<ion-menu contentId="main-content">
+  <app-menu></app-menu>
+</ion-menu>
+<div id="main-content">
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
       <ion-title>
-        Select Category
+        Home
       </ion-title>
+      <ion-button slot="end" [routerLink]="['/recent-entries']">
+        <ion-icon name="time-outline"></ion-icon>
+      </ion-button>
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
-    @for (cat of (categories$ | async); track cat) {
-      <app-category [category]="cat"></app-category>
+  <ion-content [fullscreen]="true">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          Select Category
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    @if (in_group) {
+      <ion-list>
+        @for (cat of (categories$ | async); track cat) {
+        <app-category [category]="cat"></app-category>
+        }
+      </ion-list>
+    } @else {
+      <ion-item color="warning">
+        <ion-label>
+          Error: You did not create an account, or your account is not registered under a group.
+          If you have created an account, please contact your admin to be added to a group.
+        </ion-label>
+        
+      </ion-item>
     }
-  </ion-list>
-</ion-content>
+    
+  </ion-content>
+</div>

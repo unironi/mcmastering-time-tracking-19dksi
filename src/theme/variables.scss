@@ -9,6 +9,7 @@
 	--ion-color-primary-tint: #881a50;
     --ion-color-secondary: #fec057;
     --ion-color-secondary-contrast: #000000;
+	--ion-color-background: #4c5d68;
 }
 
 .ion-color-primary {
@@ -23,6 +24,6 @@
 // #4c5d68 - mac grey colour
 
 ion-toast {
-  --background: #4c5d68;
+  --background: var(--ion-color-background);
   --color: white;
 }

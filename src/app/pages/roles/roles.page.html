@@ -17,7 +17,7 @@
   </ion-header>
 
   <ion-list>
-    @for (role of (roles$ | async); track role) {
+    @for (role of roles; track role) {
       <app-role [role]="role"></app-role>
     }
   </ion-list>
