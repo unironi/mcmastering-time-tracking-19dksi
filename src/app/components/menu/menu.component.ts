@@ -37,11 +37,15 @@ import {
     IonContent,
   ],
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
   private supabaseService = inject(SupabaseService);
   private download = inject(DownloadService);
 
   user: any;
+
+  async ngOnInit() {
+    this.user = await this.supabaseService.getUser();
+  }
 
   async downloadCSV() {
     const csv_data = await this.supabaseService.downloadEntries(this.user.id);
