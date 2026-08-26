@@ -4,15 +4,12 @@ import { Platform } from '@ionic/angular';
 import { Role, SupabaseService } from '../../services/supabase.service';
 import { IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
 import { RoleComponent } from '../../components/role/role.component';
-import { AsyncPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.page.html',
   styleUrls: ['./roles.page.scss'],
-  imports: [ IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList, RoleComponent, AsyncPipe, RouterLink ]
+  imports: [ IonButtons, IonBackButton, IonHeader, IonToolbar, IonTitle, IonContent, IonList, RoleComponent ]
 })
 
 export class RolesPage implements OnInit {

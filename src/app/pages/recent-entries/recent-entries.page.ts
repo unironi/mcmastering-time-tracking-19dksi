@@ -1,8 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { SupabaseService } from '../../services/supabase.service';
-import { IonLabel, IonItem, IonMenuToggle, IonButtons, IonMenuButton, IonMenu, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
+import { IonButtons, IonMenuButton, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
 import { RouterLink } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
 import { ListedEntryComponent } from '../../components/listed-entry/listed-entry.component';
 import { MenuComponent } from '../../components/menu/menu.component';
 
@@ -11,12 +10,8 @@ import { MenuComponent } from '../../components/menu/menu.component';
   templateUrl: './recent-entries.page.html',
   styleUrls: ['./recent-entries.page.scss'],
   imports: [
-    IonLabel,
-    IonItem,
-    IonMenuToggle,
     IonButtons, 
     IonMenuButton,
-    IonMenu,
     IonButton,
     IonIcon,
     IonHeader,
@@ -27,7 +22,6 @@ import { MenuComponent } from '../../components/menu/menu.component';
     RouterLink,
     ListedEntryComponent,
     MenuComponent,
-    AsyncPipe,
   ],
 })
 export class RecentEntriesPage implements OnInit {

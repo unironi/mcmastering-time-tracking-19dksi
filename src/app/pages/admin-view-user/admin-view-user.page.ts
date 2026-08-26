@@ -1,7 +1,6 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonGrid, IonRow, IonCol, IonBackButton, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonBackButton, IonIcon, IonButtons, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
 import { SupabaseService } from '../../services/supabase.service';
 import { Platform } from '@ionic/angular';
 import { DownloadService } from '../../services/download.service';
@@ -10,7 +9,7 @@ import { DownloadService } from '../../services/download.service';
   selector: 'app-admin-view-user',
   templateUrl: './admin-view-user.page.html',
   styleUrls: ['./admin-view-user.page.scss'],
-    imports: [AsyncPipe, IonGrid, IonRow, IonCol, IonBackButton, IonInput, IonModal, IonIcon, IonButtons, IonItem, IonLabel, IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonButton]
+    imports: [IonGrid, IonRow, IonCol, IonBackButton, IonIcon, IonButtons, IonHeader, IonToolbar, IonTitle, IonContent, IonButton]
 
 })
 export class AdminViewUserPage implements OnInit {

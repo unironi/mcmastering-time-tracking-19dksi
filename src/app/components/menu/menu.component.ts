@@ -2,18 +2,11 @@ import { Component, inject, input, OnInit } from '@angular/core';
 import { DownloadService } from '../../services/download.service';
 import { SupabaseService } from '../../services/supabase.service';
 import {
-  IonLabel,
-  IonItem,
-  IonMenuToggle,
-  IonButtons,
-  IonMenuButton,
-  IonMenu,
   IonButton,
   IonIcon,
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonContent,
   IonList,
 } from '@ionic/angular/standalone';
 
@@ -23,18 +16,11 @@ import {
   styleUrls: ['./menu.component.scss'],
   imports: [
     IonList,
-    IonLabel,
-    IonItem,
-    IonMenuToggle,
-    IonButtons,
-    IonMenuButton,
-    IonMenu,
     IonButton,
     IonIcon,
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonContent,
   ],
 })
 export class MenuComponent implements OnInit {

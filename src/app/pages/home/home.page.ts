@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RefresherCustomEvent } from '@ionic/angular';
 import { CategoryComponent } from '../../components/category/category.component';
 import { SupabaseService } from '../../services/supabase.service';
-import { IonLabel, IonItem, IonMenuToggle, IonButtons, IonMenuButton, IonMenu, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
+import { IonLabel, IonItem, IonButtons, IonMenuButton, IonMenu, IonButton, IonIcon, IonHeader, IonToolbar, IonTitle, IonContent, IonList } from "@ionic/angular/standalone";
 import { AsyncPipe } from '@angular/common';
 import { map } from 'rxjs';
 import { RouterLink } from '@angular/router';
@@ -15,7 +15,6 @@ import { MenuComponent } from '../../components/menu/menu.component';
   imports: [
     IonLabel,
     IonItem,
-    IonMenuToggle,
     IonButtons, 
     IonMenuButton,
     IonMenu,
